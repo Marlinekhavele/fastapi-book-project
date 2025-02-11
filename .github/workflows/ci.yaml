@@ -3,6 +3,9 @@ name: Test
 on:
   pull_request:
     branches: [ main ]
+  # Adding push trigger for testing
+  push:
+    branches: [ feature/* ]
 
 jobs:
   test:
