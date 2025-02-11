@@ -140,14 +140,14 @@ The API includes proper error handling for:
 5. Open a Pull Request
 
 ## 🚀 Deployment Process
-### ** Automated Deployment (GitHub Actions)**
-- **Push to `main`** triggers the deployment workflow.
-- **GitHub Actions CI/CD pipeline:**
+#### Automated Deployment (GitHub Actions)
+- Push to `main` triggers the deployment workflow.
+- GitHub Actions CI/CD pipeline:
   - Runs tests using `pytest`
   - SSHs into DigitalOcean
   - Pulls latest changes & restarts FastAPI + Nginx
 
-### ** Manual Deployment**
+#### Manual Deployment
 ```shell
 ssh root@your_server_ip_address
 cd /root/fastapi-book-project

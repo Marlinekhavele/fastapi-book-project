@@ -1,10 +1,8 @@
 name: FastAPIBook Service 
 on:
   pull_request:
-    branches: [ main, feat/get-book-by-id]
-  push:
-    branches: [ main, feat/get-book-by-id]
- 
+    branches: [main]
+
 jobs:
   test:
     name: Run Tests
