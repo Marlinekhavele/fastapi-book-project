@@ -1,4 +1,4 @@
-name: Deploy Pipeline
+name: CD Pipeline
 
 on:
   push:
@@ -26,41 +26,43 @@ jobs:
       - name: Set up SSH key
         env:
           SSH_KEY: ${{ secrets.SSH_KEY }}
-          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_HOST: ${{ secrets.HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
         run: |
           mkdir -p ~/.ssh
           echo "$SSH_KEY" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H "$SSH_HOST" >> ~/.ssh/known_hosts
+          ssh-keyscan -H $SSH_HOST >> ~/.ssh/known_hosts
 
       - name: Deploy Application
         env:
-          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_HOST: ${{ secrets.HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
         run: |
-          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa root@$SSH_HOST << 'EOF'
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${SSH_USER}@${SSH_HOST} << 'EOF'
             set -e
 
-            echo "🔹 Updating system packages"
+            echo "🔹 Updating system packages..."
             sudo apt update -y 
 
-            echo "🔹 Installing Python and Pip"
+            echo "🔹 Installing Python and Pip..."
             sudo apt install -y python3 python3-venv python3-pip
 
-            echo "🔹 Navigating to project directory"
-            cd /root/fastapi-book-project
+            echo "🔹 Navigating to project directory..."
+            cd /home/repos/fastapi-book-project
 
-            echo "🔹 Pulling latest code"
+            echo "🔹 Pulling latest code..."
             git pull origin main
 
-            echo "🔹 Setting up virtual environment"
+            echo "🔹 Setting up virtual environment..."
             python3 -m venv venv
             source venv/bin/activate
 
-            echo "🔹 Installing dependencies"
+            echo "🔹 Installing dependencies..."
             pip install --upgrade pip
             pip install -r requirements.txt
 
-            echo "🔹 Restarting FastAPI service"
+            echo "🔹 Restarting FastAPI service..."
             sudo systemctl restart fastapi.service
 
             echo "✅ Deployment successful!"
